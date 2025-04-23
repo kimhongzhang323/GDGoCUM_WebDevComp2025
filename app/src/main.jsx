@@ -22,6 +22,7 @@ import GovernmentServicesCn from "./components/government_cn";
 import HealthcarePageCn from "./components/HealthcarePage_cn";
 import VitalInformationCn from "./components/Vital_cn";
 import CommunityEventsCn from "./components/CommunityEvents_cn";
+import PassportApplicationCn from "./components/passport_cn";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -47,6 +48,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/GovernmentServicesCn" element={<GovernmentServicesCn />} />
           <Route path="/HealthcarePageCn" element={<HealthcarePageCn />} />
           <Route path="/CommunityEventsCn" element={<CommunityEventsCn />} />
+          <Route path="/PassportApplicationCn" element={<PassportApplicationCn />} />
+
 
         </Route>
 

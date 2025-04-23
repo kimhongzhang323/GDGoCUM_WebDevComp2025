@@ -1,69 +1,78 @@
 import React, { useState } from "react";
-import { Search, ArrowRight, ExternalLink, ChevronRight } from "lucide-react";
+import { Search, ArrowRight, ChevronRight, HelpCircle, Home, Info } from "lucide-react";
 
 const servicesList = [
   {
     name: "更新身份证 (MyKad)",
-    description: "轻松在线更新您的身份证或预约。",
+    description: "在线轻松更新您的身份证，提供分步指导",
     link: "https://www.jpn.gov.my/mykad/",
-    icon: "🆔",
-    category: "身份认证"
+    image: "/IC.jpg",
+    category: "身份证明",
+    color: "bg-purple-100"
   },
   {
     name: "申请护照",
-    description: "通过移民局申请或更新护照。",
-    link: "https://www.imi.gov.my/index.php/en/",
-    icon: "🛂",
-    category: "旅行"
+    description: "简单的护照申请流程，支持预约",
+    link: "/PassportApplicationCn",
+    image: "/passport.jpg",
+    category: "旅行",
+    color: "bg-blue-100"
   },
   {
-    name: "路税与驾照 (JPJ)",
-    description: "更新路税或驾照。检查交通罚单。",
+    name: "路税与驾照",
+    description: "更新车辆文件并检查交通罚单",
     link: "https://www.jpj.gov.my/",
-    icon: "🚗",
-    category: "交通"
+    image: "/jpj.jpeg",
+    category: "交通",
+    color: "bg-green-100"
   },
   {
-    name: "社会保险 (SOCSO / PERKESO)",
-    description: "申请福利或就业保险系统 (EIS)。",
+    name: "社保福利 (SOCSO)",
+    description: "申请工伤福利和保险",
     link: "https://www.perkeso.gov.my/",
-    icon: "💼",
-    category: "就业"
+    image: "/perkeso.png",
+    category: "就业",
+    color: "bg-orange-100"
   },
   {
-    name: "公积金 (EPF / KWSP)",
-    description: "管理退休基金并检查您的储蓄状态。",
+    name: "公积金 (EPF/KWSP)",
+    description: "轻松管理您的退休储蓄",
     link: "https://www.kwsp.gov.my/",
-    icon: "🏦",
-    category: "财务"
+    image: "/EPF.png",
+    category: "财务",
+    color: "bg-yellow-100"
   },
   {
-    name: "所得税 (LHDN)",
-    description: "轻松通过电子申报检查、支付或申报所得税。",
+    name: "所得税",
+    description: "在线报税，提供简单指导",
     link: "https://www.hasil.gov.my/",
-    icon: "📄",
-    category: "财务"
+    image: "/LHDN.png",
+    category: "财务",
+    color: "bg-red-100"
   },
   {
     name: "MySejahtera",
-    description: "COVID-19 健康和接触追踪应用程序。",
+    description: "健康服务与医疗预约",
     link: "https://mysejahtera.malaysia.gov.my/",
-    icon: "🏥",
-    category: "健康"
+    image: "/sejahtera.jpg",
+    category: "健康",
+    color: "bg-teal-100"
   },
   {
-    name: "人民关怀援助金 (BPR)",
-    description: "为低收入家庭提供的政府财政援助。",
+    name: "人民援助 (Bantuan Rakyat)",
+    description: "为低收入家庭提供政府援助",
     link: "https://bpr.hasil.gov.my/",
-    icon: "💵",
-    category: "福利"
+    image: "/bpr.jpg",
+    category: "福利",
+    color: "bg-pink-100"
   }
 ];
 
 export default function GovernmentServicesCn() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("全部");
-
+  const [fontSize] = useState(18);
+  
   const categories = ["全部", ...new Set(servicesList.map(service => service.category))];
 
   const filtered = servicesList.filter((service) => {
@@ -74,45 +83,51 @@ export default function GovernmentServicesCn() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* 标题部分 */}
-        <header className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
-            马来西亚政府服务
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4 sm:px-6 lg:px-8" style={{ fontSize: `${fontSize}px` }}>
+      <div className="max-w-6xl mx-auto">
+        {/* 标题 */}
+        <header className="mb-10 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <Home className="h-8 w-8 text-blue-600" />
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+            马来西亚公民服务
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-            快速访问所有公民的基本在线政府服务，特别考虑到马来西亚的老年人。
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            一站式访问所有政府服务
           </p>
         </header>
 
-        {/* 搜索和筛选部分 */}
-        <div className="max-w-4xl mx-auto mb-12 space-y-6">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {/* 搜索与筛选 */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="relative mb-6">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              placeholder="搜索服务（例如 '护照', '税务'）..."
+              placeholder="您需要什么服务？（例如：护照、税务）"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full pl-10 pr-3 py-4 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
-              aria-label="搜索政府服务"
+              className="block w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              aria-label="搜索服务"
+              style={{ fontSize: `${fontSize}px` }}
             />
           </div>
 
-          {/* 分类筛选 */}
           <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
                   selectedCategory === category
-                    ? "bg-blue-600 text-white"
+                    ? "bg-blue-500 text-white shadow-md"
                     : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                 }`}
+                style={{ fontSize: `${fontSize}px` }}
               >
                 {category}
               </button>
@@ -126,85 +141,102 @@ export default function GovernmentServicesCn() {
             {filtered.map((service, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col"
               >
-                <div className="p-6">
-                  <div className="flex items-start">
-                    <span className="text-3xl mr-4" aria-hidden="true">
-                      {service.icon}
-                    </span>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                        {service.name}
-                      </h2>
-                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3">
-                        {service.category}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mt-3 mb-4">
+                <div className={`h-40 ${service.color} flex items-center justify-center p-6`}>
+                  <img 
+                    src={service.image} 
+                    alt={service.name}
+                    className="max-h-full max-w-full object-contain rounded-lg"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = "https://via.placeholder.com/300x150?text=服务图片";
+                    }}
+                  />
+                </div>
+                
+                <div className="p-6 flex-grow">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 leading-snug">
+                    {service.name}
+                  </h2>
+                  <p className="text-gray-600 mb-5">
                     {service.description}
                   </p>
-                  <div className="flex justify-between items-center">
-                    <a
-                      href={service.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group"
-                      aria-label={`访问 ${service.name} 网站`}
-                    >
-                      访问服务
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
-                    <span className="text-xs text-gray-500">
-                      官方链接
-                    </span>
-                  </div>
+                  <a
+                    href={service.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  >
+                    访问 <ArrowRight className="ml-1 h-4 w-4" />
+                  </a>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-4">
-              <Search className="h-6 w-6 text-gray-400" />
+          <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
+              <Search className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
-              未找到服务
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              未找到相关服务
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto">
-              尝试调整您的搜索或筛选条件。需要帮助？{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                联系支持
-              </a>
+            <p className="text-gray-500 max-w-md mx-auto mb-4">
+              尝试不同的搜索词或类别
             </p>
+            <button 
+              onClick={() => {
+                setSearch("");
+                setSelectedCategory("全部");
+              }}
+              className="text-blue-500 hover:underline"
+            >
+              显示所有服务
+            </button>
           </div>
         )}
 
-        {/* 额外帮助部分 */}
-        <div className="mt-16 bg-blue-50 rounded-2xl p-6 md:p-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">
+        {/* 帮助部分 */}
+        <div className="mt-16 bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <HelpCircle className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
               需要帮助使用这些服务？
             </h2>
-            <p className="text-gray-700 mb-6">
-              我们的社区志愿者可以帮助您完成使用这些政府服务的过程。
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              我们友好的志愿者可以指导您完成任何政府服务流程
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
               >
-                请求帮助
-                <ChevronRight className="ml-2 h-4 w-4" />
+                获取个人帮助
+                <ChevronRight className="ml-2 h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-xl shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
               >
-                查看分步指南
+                查看视频指南
               </a>
             </div>
+          </div>
+        </div>
+
+        {/* 安全提示 */}
+        <div className="mt-8 bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-400 flex items-start">
+          <Info className="h-5 w-5 text-yellow-500 mt-1 mr-3 flex-shrink-0" />
+          <div>
+            <h3 className="text-lg font-semibold text-yellow-800 mb-1">安全提示</h3>
+            <p className="text-yellow-700">
+              政府服务始终免费。切勿与他人分享密码或向非官方来电者付款。
+            </p>
           </div>
         </div>
       </div>

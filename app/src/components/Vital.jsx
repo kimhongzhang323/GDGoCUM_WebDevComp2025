@@ -83,22 +83,7 @@ export default function VitalInformation() {
   return (
     <div className="min-h-screen bg-gray-50" style={{ fontSize: `${fontSize}px` }}>
       {/* Accessibility Toolbar */}
-      <div className="fixed bottom-6 right-6 z-50 flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
-        <button 
-          onClick={() => adjustFontSize(-1)}
-          className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-          aria-label="Decrease font size"
-        >
-          <span className="text-xl font-bold">A-</span>
-        </button>
-        <button 
-          onClick={() => adjustFontSize(1)}
-          className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-          aria-label="Increase font size"
-        >
-          <span className="text-xl font-bold">A+</span>
-        </button>
-      </div>
+      
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Page Header */}

@@ -48,11 +48,11 @@ export default function Layout() {
   const timeoutRef = useRef(null)
 
   const increaseFontSize = () => {
-    if (fontSize < 24) setFontSize(fontSize + 2)
+    setFontSize((prev) => Math.min(prev + 2, 32)); // Limit max font size
   }
 
   const decreaseFontSize = () => {
-    if (fontSize > 12) setFontSize(fontSize - 2)
+    setFontSize((prev) => Math.max(prev - 2, 12)); // Limit min font size
   }
 
   const navItems = [
@@ -218,7 +218,7 @@ export default function Layout() {
 
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ zoom: zoomLevel }}>
+    <div className="min-h-screen flex flex-col" style={{ fontSize: `${fontSize}px` }}>
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -571,7 +571,22 @@ export default function Layout() {
             </motion.div>
           )}
         </AnimatePresence>
-        
+        <div className="fixed bottom-30 right-6 z-50 flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
+          <button 
+            onClick={() => decreaseFontSize()}
+            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+            aria-label="Decrease font size"
+          >
+            <span className="text-xl font-bold">A-</span>
+          </button>
+          <button 
+            onClick={() => increaseFontSize()}
+            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+            aria-label="Increase font size"
+          >
+            <span className="text-xl font-bold">A+</span>
+          </button>
+        </div>
         <button
           onClick={toggleListening}
           className={`w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all ${

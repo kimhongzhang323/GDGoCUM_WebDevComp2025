@@ -19,9 +19,9 @@ import {
   FiUser,
   FiSearch,
   FiMic,
-  FiStopCircle,
+  FiStopCircle ,
 } from "react-icons/fi"
-import { Outlet, NavLink, useNavigate } from "react-router-dom"
+import { Outlet,NavLink, useNavigate} from "react-router-dom"
 import React from "react"
 
 export default function Layout() {
@@ -34,12 +34,13 @@ export default function Layout() {
   const [isActive, setIsActive] = useState(false)
   const [voiceInput, setVoiceInput] = useState("")
   const [chatMessages, setChatMessages] = useState([
-    { sender: "bot", text: "你好！我是您的社区连接助手。我能为您做些什么？" },
+    { sender: "bot", text: "您好！我是您的社区连接助手。今天有什么可以帮您的吗？" }
   ])
   const [lastInputTime, setLastInputTime] = useState(0)
   const [confirmationMessage, setConfirmationMessage] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredNavItems, setFilteredNavItems] = useState([])
+  const [zoomLevel, setZoomLevel] = useState(1)
 
   const recognitionRef = useRef(null)
   const navigate = useNavigate()
@@ -47,18 +48,18 @@ export default function Layout() {
   const timeoutRef = useRef(null)
 
   const increaseFontSize = () => {
-    if (fontSize < 24) setFontSize(fontSize + 2)
+    setFontSize((prev) => Math.min(prev + 2, 32))
   }
 
   const decreaseFontSize = () => {
-    if (fontSize > 12) setFontSize(fontSize - 2)
+    setFontSize((prev) => Math.max(prev - 2, 12))
   }
 
   const navItems = [
-    { id: "VitalInformationCn", label: "首页", icon: <FiHome /> },
-    { id: "GovernmentServicesCn", label: "政府服务", icon: <FiShield /> },
-    { id: "HealthcarePageCn", label: "医疗资源", icon: <FiHeart /> },
-    { id: "CommunityEventsCn", label: "社区活动", icon: <FiCalendar /> },
+    { id: "VitalInformationCn", label: "首页", labelEn: "Home", icon: <FiHome /> },
+    { id: "GovernmentServicesCn", label: "政府服务", labelEn: "Government Services", icon: <FiShield /> },
+    { id: "HealthcarePageCn", label: "医疗资源", labelEn: "Healthcare Resources", icon: <FiHeart /> },
+    { id: "CommunityEventsCn", label: "社区活动", labelEn: "Community Events", icon: <FiCalendar /> },
   ]
 
   useEffect(() => {
@@ -67,9 +68,10 @@ export default function Layout() {
     } else {
       const query = searchQuery.toLowerCase()
       const filtered = navItems.filter(
-        (item) => item.label.toLowerCase().includes(query)
-      )
-      setFilteredNavItems(filtered)
+        (item) =>
+          item.label.toLowerCase().includes(query) || item.labelEn.toLowerCase().includes(query)
+      );
+      setFilteredNavItems(filtered);
     }
   }, [searchQuery])
 
@@ -81,7 +83,7 @@ export default function Layout() {
     setChatbotOpen(!chatbotOpen)
     if (!chatbotOpen) {
       setChatMessages([
-        { sender: "bot", text: "你好！我是您的社区连接助手。我能为您做些什么？" },
+        { sender: "bot", text: "您好！我是您的社区连接助手。今天有什么可以帮您的吗？" }
       ])
     }
   }
@@ -161,7 +163,7 @@ export default function Layout() {
 
   const handleVoiceCommand = () => {
     if (voiceInput.trim() === "") {
-      setConfirmationMessage("抱歉，我没有听清楚。请再试一次。")
+      setConfirmationMessage("抱歉，我没有听清楚，请再试一次。")
       setTimeout(() => setConfirmationMessage(""), 2000)
       return
     }
@@ -176,26 +178,26 @@ export default function Layout() {
     } 
     else if (input.includes("医疗") || input.includes("医院") || input.includes("诊所")) {
       confirmation = "正在打开医疗资源..."
-      action = () => navigate("/HealthcarePage")
+      action = () => navigate("/HealthcarePageCn")
     }
     else if (input.includes("政府") || input.includes("服务") || input.includes("护照")) {
       confirmation = "正在显示政府服务..."
-      action = () => navigate("/GovernmentServices")
+      action = () => navigate("/GovernmentServicesCn")
     }
     else if (input.includes("活动") || input.includes("社区") || input.includes("事件")) {
       confirmation = "正在显示社区活动..."
-      action = () => navigate("/events")
+      action = () => navigate("/CommunityEventsCn")
     }
-    else if (input.includes("增大") && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
+    else if ((input.includes("增大") || input.includes("增加")) && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
       confirmation = "正在增大文字大小..."
       action = increaseFontSize
     }
-    else if (input.includes("减小") && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
+    else if ((input.includes("减小") || input.includes("缩小")) && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
       confirmation = "正在减小文字大小..."
       action = decreaseFontSize
     }
     else {
-      confirmation = "未识别命令。请尝试说'前往医疗'或'显示政府服务'"
+      confirmation = "未识别指令。请尝试说'前往医疗资源'或'显示政府服务'"
     }
 
     setConfirmationMessage(confirmation)
@@ -212,7 +214,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ fontSize: `${fontSize}px` }}>
-      {/* 顶部导航栏 */}
+      {/* 页眉 */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
@@ -248,7 +250,7 @@ export default function Layout() {
                       <div className="relative">
                         <input
                           type="text"
-                          placeholder="搜索资源 (例如: '医疗' 或 '政府')..."
+                          placeholder="搜索资源 (例如：'医疗'或'health')..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -267,35 +269,35 @@ export default function Layout() {
                                 onClick={() => setSearchOpen(false)}
                               >
                                 {item.icon}
-                                <span className="ml-3">{item.label}</span>
+                                <span className="ml-3">{item.label} / {item.labelEn}</span>
                               </NavLink>
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-gray-500 text-sm mt-3">未找到结果</p>
+                        <p className="text-gray-500 text-sm mt-3">未找到结果。</p>
                       )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              {/* 字体大小控制 */}
+              {/* 页面缩放控制 */}
               <div className="flex items-center space-x-2 border-l border-r border-gray-200 px-4">
                 <button
-                  onClick={decreaseFontSize}
+                  onClick={() => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5))}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="减小字体"
+                  aria-label="缩小"
                 >
-                  <FiZoomOut className="w-4 h-4" />
+                  <FiZoomOut className="w-5 h-5" />
                 </button>
-                <span className="text-xs text-gray-400">文字大小</span>
+                <span className="text-xl text-gray-400">页面缩放</span>
                 <button
-                  onClick={increaseFontSize}
+                  onClick={() => setZoomLevel((prev) => Math.min(prev + 0.1, 2))}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="增大字体"
+                  aria-label="放大"
                 >
-                  <FiZoomIn className="w-4 h-4" />
+                  <FiZoomIn className="w-5 h-5" />
                 </button>
               </div>
 
@@ -333,14 +335,14 @@ export default function Layout() {
                   key={item.id}
                   to={item.id === "home" ? "/" : `/${item.id}`}
                   className={({ isActive }) =>
-                    `flex items-center px-6 py-4 text-sm font-medium transition-colors ${
+                    `flex items-center px-6 py-4 text-base font-medium transition-colors ${
                       isActive
                         ? "text-blue-600 border-b-2 border-blue-500"
                         : "text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                     }`
                   }
                 >
-                  <span className="mr-2">{item.icon}</span>
+                  <span className="mr-2 text-lg">{item.icon}</span>
                   {item.label}
                 </NavLink>
               ))}
@@ -361,7 +363,7 @@ export default function Layout() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="搜索资源 (例如: '医疗' 或 '政府')..."
+                    placeholder="搜索资源 (例如：'医疗'或'health')..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -379,13 +381,13 @@ export default function Layout() {
                             onClick={() => setSearchOpen(false)}
                           >
                             {item.icon}
-                            <span className="ml-3">{item.label}</span>
+                            <span className="ml-3">{item.label} / {item.labelEn}</span>
                           </NavLink>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-500 text-sm mt-3">未找到结果</p>
+                    <p className="text-gray-500 text-sm mt-3">未找到结果。</p>
                   )}
                 </div>
               </div>
@@ -469,7 +471,7 @@ export default function Layout() {
             <div>
               <h3 className="text-white text-lg font-semibold mb-4">社区连接</h3>
               <p className="text-gray-400 mb-4">
-                帮助老年人和家庭便捷有尊严地获取基本服务。
+                帮助老年人和家庭有尊严且便捷地获取基本服务。
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -556,12 +558,27 @@ export default function Layout() {
                   </span>
                 </>
               ) : (
-                <span className="text-sm">{confirmationMessage || "请尝试说'前往医疗'"}</span>
+                <span className="text-sm">{confirmationMessage || "请尝试说'前往医疗资源'"}</span>
               )}
             </motion.div>
           )}
         </AnimatePresence>
-        
+        <div className="fixed bottom-30 right-6 z-50 flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
+          <button 
+            onClick={() => decreaseFontSize()}
+            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+            aria-label="减小字体"
+          >
+            <span className="text-xl font-bold">A-</span>
+          </button>
+          <button 
+            onClick={() => increaseFontSize()}
+            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+            aria-label="增大字体"
+          >
+            <span className="text-xl font-bold">A+</span>
+          </button>
+        </div>
         <button
           onClick={toggleListening}
           className={`w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all ${
