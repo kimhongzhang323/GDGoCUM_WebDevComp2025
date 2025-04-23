@@ -40,6 +40,7 @@ export default function Layout() {
   const [confirmationMessage, setConfirmationMessage] = useState("")
   const [searchQuery, setSearchQuery] = useState("") // State for search input
   const [filteredNavItems, setFilteredNavItems] = useState([])
+  const [zoomLevel, setZoomLevel] = useState(1); // State for page zoom level
 
   const recognitionRef = useRef(null)
   const navigate = useNavigate()
@@ -217,7 +218,7 @@ export default function Layout() {
 
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ fontSize: `${fontSize}px` }}>
+    <div className="min-h-screen flex flex-col" style={{ zoom: zoomLevel }}>
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -287,19 +288,22 @@ export default function Layout() {
               </div>
 
               {/* Font Size Controls */}
+              
+
+              {/* Page Zoom Controls */}
               <div className="flex items-center space-x-2 border-l border-r border-gray-200 px-4">
                 <button
-                  onClick={decreaseFontSize}
+                  onClick={() => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5))}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="Decrease font size"
+                  aria-label="Zoom out"
                 >
                   <FiZoomOut className="w-5 h-5" />
                 </button>
-                <span className="text-xl text-gray-400">Text Size</span>
+                <span className="text-xl text-gray-400">Page Zoom</span>
                 <button
-                  onClick={increaseFontSize}
+                  onClick={() => setZoomLevel((prev) => Math.min(prev + 0.1, 2))}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="Increase font size"
+                  aria-label="Zoom in"
                 >
                   <FiZoomIn className="w-5 h-5" />
                 </button>
@@ -339,14 +343,14 @@ export default function Layout() {
                   key={item.id}
                   to={item.id === "home" ? "/" : `/${item.id}`}
                   className={({ isActive }) =>
-                    `flex items-center px-6 py-4 text-sm font-medium transition-colors ${
+                    `flex items-center px-6 py-4 text-base font-medium transition-colors ${
                       isActive
                         ? "text-blue-600 border-b-2 border-blue-500"
                         : "text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                     }`
                   }
                 >
-                  <span className="mr-2">{item.icon}</span>
+                  <span className="mr-2 text-lg">{item.icon}</span>
                   {item.label}
                 </NavLink>
               ))}

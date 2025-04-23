@@ -15,6 +15,7 @@ import GovernmentServices from "./components/government";
 import HealthcarePage from "./components/HealthcarePage";
 import VitalInformation from "./components/Vital";
 import CommunityEvents from "./components/CommunityEvents";
+import PassportApplication from "./components/passport";
 
 // Components - Chinese
 import GovernmentServicesCn from "./components/government_cn";
@@ -36,6 +37,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/GovernmentServices" element={<GovernmentServices />} />
           <Route path="/HealthcarePage" element={<HealthcarePage />} />
           <Route path="/CommunityEvents" element={<CommunityEvents />} />
+          <Route path="/PassportApplication" element={<PassportApplication />} />
+
         </Route>
 
         {/* Chinese routes with Chinese layout */}

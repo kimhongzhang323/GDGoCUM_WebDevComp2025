@@ -1,68 +1,77 @@
 import React, { useState } from "react";
-import { Search, ArrowRight, ExternalLink, ChevronRight } from "lucide-react";
+import { Search, ArrowRight, ChevronRight, HelpCircle, Home, Info } from "lucide-react";
 
 const servicesList = [
   {
     name: "Renew MyKad (IC)",
-    description: "Easily renew your Identity Card online or book an appointment.",
+    description: "Easy online renewal for your Identity Card with step-by-step guidance",
     link: "https://www.jpn.gov.my/mykad/",
-    icon: "🆔",
-    category: "Identification"
+    image: "/IC.jpg",
+    category: "Identification",
+    color: "bg-purple-100"
   },
   {
     name: "Apply for Passport",
-    description: "Apply for or renew your passport with the Immigration Department.",
-    link: "https://www.imi.gov.my/index.php/en/",
-    icon: "🛂",
-    category: "Travel"
+    description: "Simple passport application with appointment booking",
+    link: "/PassportApplication",
+    image: "/passport.jpg",
+    category: "Travel",
+    color: "bg-blue-100"
   },
   {
-    name: "Road Tax & License (JPJ)",
-    description: "Renew road tax or driver's license. Check for traffic summons.",
+    name: "Road Tax & License",
+    description: "Renew vehicle documents and check traffic summons",
     link: "https://www.jpj.gov.my/",
-    icon: "🚗",
-    category: "Transportation"
+    image: "/jpj.jpeg",
+    category: "Transport",
+    color: "bg-green-100"
   },
   {
-    name: "SOCSO / PERKESO",
-    description: "Claim benefits or apply for Employment Insurance System (EIS).",
+    name: "SOCSO Benefits",
+    description: "Claim employment injury benefits and insurance",
     link: "https://www.perkeso.gov.my/",
-    icon: "💼",
-    category: "Employment"
+    image: "/perkeso.png",
+    category: "Employment",
+    color: "bg-orange-100"
   },
   {
-    name: "EPF / KWSP",
-    description: "Manage retirement funds and check your savings status.",
+    name: "EPF/KWSP",
+    description: "Manage your retirement savings easily",
     link: "https://www.kwsp.gov.my/",
-    icon: "🏦",
-    category: "Finance"
+    image: "/EPF.png",
+    category: "Finance",
+    color: "bg-yellow-100"
   },
   {
-    name: "Income Tax (LHDN)",
-    description: "Check, pay, or file income taxes easily with e-Filing.",
+    name: "Income Tax",
+    description: "File taxes online with simple guidance",
     link: "https://www.hasil.gov.my/",
-    icon: "📄",
-    category: "Finance"
+    image: "/LHDN.png",
+    category: "Finance",
+    color: "bg-red-100"
   },
   {
     name: "MySejahtera",
-    description: "Health and contact tracing application for COVID-19.",
+    description: "Health services and medical appointments",
     link: "https://mysejahtera.malaysia.gov.my/",
-    icon: "🏥",
-    category: "Health"
+    image: "/sejahtera.jpg",
+    category: "Health",
+    color: "bg-teal-100"
   },
   {
-    name: "Bantuan Prihatin Rakyat (BPR)",
-    description: "Government financial aid for low-income households.",
+    name: "Bantuan Rakyat",
+    description: "Government aid for low-income families",
     link: "https://bpr.hasil.gov.my/",
-    icon: "💵",
-    category: "Welfare"
+    image: "/bpr.jpg",
+    category: "Welfare",
+    color: "bg-pink-100"
   }
 ];
 
 export default function GovernmentServices() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [fontSize] = useState(18);
   
   const categories = ["All", ...new Set(servicesList.map(service => service.category))];
 
@@ -73,46 +82,55 @@ export default function GovernmentServices() {
     return matchesSearch && matchesCategory;
   });
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <header className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
-            Malaysian Government Services
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4 sm:px-6 lg:px-8" style={{ fontSize: `${fontSize}px` }}>
+    
+
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="mb-10 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <Home className="h-8 w-8 text-blue-600" />
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+            Malaysia Citizen Services
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-            Quick access to essential online government services for all citizens, with special consideration for senior Malaysians.
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Simple access to all government services in one place
           </p>
         </header>
 
-        {/* Search and Filter Section */}
-        <div className="max-w-4xl mx-auto mb-12 space-y-6">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {/* Search and Filter */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="relative mb-6">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              placeholder="Search services (e.g. 'passport', 'tax')..."
+              placeholder="What service do you need? (e.g. passport, tax)"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full pl-10 pr-3 py-4 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
-              aria-label="Search government services"
+              className="block w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              aria-label="Search services"
+              style={{ fontSize: `${fontSize}px` }}
             />
           </div>
 
-          {/* Category Filter */}
           <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
                   selectedCategory === category
-                    ? "bg-blue-600 text-white"
+                    ? "bg-blue-500 text-white shadow-md"
                     : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                 }`}
+                style={{ fontSize: `${fontSize}px` }}
               >
                 {category}
               </button>
@@ -126,85 +144,102 @@ export default function GovernmentServices() {
             {filtered.map((service, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col"
               >
-                <div className="p-6">
-                  <div className="flex items-start">
-                    <span className="text-3xl mr-4" aria-hidden="true">
-                      {service.icon}
-                    </span>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                        {service.name}
-                      </h2>
-                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3">
-                        {service.category}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mt-3 mb-4">
+                <div className={`h-40 ${service.color} flex items-center justify-center p-6`}>
+                  <img 
+                    src={service.image} 
+                    alt={service.name}
+                    className="max-h-full max-w-full object-contain rounded-lg"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = "https://via.placeholder.com/300x150?text=Service+Image";
+                    }}
+                  />
+                </div>
+                
+                <div className="p-6 flex-grow">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 leading-snug">
+                    {service.name}
+                  </h2>
+                  <p className="text-gray-600 mb-5">
                     {service.description}
                   </p>
-                  <div className="flex justify-between items-center">
-                    <a
-                      href={service.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group"
-                      aria-label={`Visit ${service.name} website`}
-                    >
-                      Visit Service
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
-                    <span className="text-xs text-gray-500">
-                      Official link
-                    </span>
-                  </div>
+                  <a
+                    href={service.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  >
+                    Access <ArrowRight className="ml-1 h-4 w-4" />
+                  </a>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-4">
-              <Search className="h-6 w-6 text-gray-400" />
+          <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
+              <Search className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
               No services found
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto">
-              Try adjusting your search or filter criteria. Need help?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Contact support
-              </a>
+            <p className="text-gray-500 max-w-md mx-auto mb-4">
+              Try different search terms or categories
             </p>
+            <button 
+              onClick={() => {
+                setSearch("");
+                setSelectedCategory("All");
+              }}
+              className="text-blue-500 hover:underline"
+            >
+              Show all services
+            </button>
           </div>
         )}
 
-        {/* Additional Help Section */}
-        <div className="mt-16 bg-blue-50 rounded-2xl p-6 md:p-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">
-              Need assistance with these services?
+        {/* Help Section */}
+        <div className="mt-16 bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <HelpCircle className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Need help using these services?
             </h2>
-            <p className="text-gray-700 mb-6">
-              Our community volunteers can help guide you through the process of using these government services.
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              Our friendly volunteers can guide you through any government service process
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
               >
-                Request Help
-                <ChevronRight className="ml-2 h-4 w-4" />
+                Get Personal Assistance
+                <ChevronRight className="ml-2 h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-xl shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
               >
-                View Step-by-Step Guides
+                View Video Guides
               </a>
             </div>
+          </div>
+        </div>
+
+        {/* Safety Notice */}
+        <div className="mt-8 bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-400 flex items-start">
+          <Info className="h-5 w-5 text-yellow-500 mt-1 mr-3 flex-shrink-0" />
+          <div>
+            <h3 className="text-lg font-semibold text-yellow-800 mb-1">Safety Notice</h3>
+            <p className="text-yellow-700">
+              Government services are always free. Never share passwords or make payments to unofficial callers.
+            </p>
           </div>
         </div>
       </div>
