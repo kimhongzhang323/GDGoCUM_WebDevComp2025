@@ -19,9 +19,9 @@ import {
   FiUser,
   FiSearch,
   FiMic,
-  FiStopCircle ,
+  FiStopCircle,
 } from "react-icons/fi"
-import { Outlet,NavLink, useNavigate} from "react-router-dom"
+import { Outlet, NavLink, useNavigate } from "react-router-dom"
 import React from "react"
 
 export default function Layout() {
@@ -34,11 +34,11 @@ export default function Layout() {
   const [isActive, setIsActive] = useState(false)
   const [voiceInput, setVoiceInput] = useState("")
   const [chatMessages, setChatMessages] = useState([
-    { sender: "bot", text: "Hello! I'm your CommunityConnect assistant. How can I help you today?" }
+    { sender: "bot", text: "你好！我是您的社区连接助手。我能为您做些什么？" },
   ])
   const [lastInputTime, setLastInputTime] = useState(0)
   const [confirmationMessage, setConfirmationMessage] = useState("")
-  const [searchQuery, setSearchQuery] = useState("") // State for search input
+  const [searchQuery, setSearchQuery] = useState("")
   const [filteredNavItems, setFilteredNavItems] = useState([])
 
   const recognitionRef = useRef(null)
@@ -55,21 +55,19 @@ export default function Layout() {
   }
 
   const navItems = [
-    { id: "VitalInformation", label: "Home", labelCn: "主页", icon: <FiHome /> },
-    { id: "GovernmentServices", label: "Government Services", labelCn: "政府服务", icon: <FiShield /> },
-    { id: "HealthcarePage", label: "Healthcare Resources", labelCn: "医疗资源", icon: <FiHeart /> },
-    { id: "CommunityEvents", label: "Community Events", labelCn: "社区活动", icon: <FiCalendar /> },
+    { id: "VitalInformationCn", label: "首页", icon: <FiHome /> },
+    { id: "GovernmentServicesCn", label: "政府服务", icon: <FiShield /> },
+    { id: "HealthcarePageCn", label: "医疗资源", icon: <FiHeart /> },
+    { id: "CommunityEventsCn", label: "社区活动", icon: <FiCalendar /> },
   ]
 
-  // Filter nav items based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredNavItems([])
     } else {
       const query = searchQuery.toLowerCase()
       const filtered = navItems.filter(
-        (item) =>
-          item.label.toLowerCase().includes(query) || item.labelCn.includes(query)
+        (item) => item.label.toLowerCase().includes(query)
       )
       setFilteredNavItems(filtered)
     }
@@ -83,21 +81,19 @@ export default function Layout() {
     setChatbotOpen(!chatbotOpen)
     if (!chatbotOpen) {
       setChatMessages([
-        { sender: "bot", text: "Hello! I'm your CommunityConnect assistant. How can I help you today?" }
+        { sender: "bot", text: "你好！我是您的社区连接助手。我能为您做些什么？" },
       ])
     }
   }
 
-
-   // Initialize speech recognition
-   useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition()
         recognitionRef.current.continuous = true
         recognitionRef.current.interimResults = true
-        recognitionRef.current.lang = 'en-US'
+        recognitionRef.current.lang = 'zh-CN'
 
         recognitionRef.current.onresult = (event) => {
           const transcript = Array.from(event.results)
@@ -109,7 +105,7 @@ export default function Layout() {
         }
 
         recognitionRef.current.onerror = (event) => {
-          console.error('Speech recognition error', event.error)
+          console.error('语音识别错误', event.error)
           stopListening()
         }
       }
@@ -123,7 +119,6 @@ export default function Layout() {
     }
   }, [])
 
-  // Check for silence after voice input
   useEffect(() => {
     if (isListening && lastInputTime > 0) {
       clearTimeout(timeoutRef.current)
@@ -148,7 +143,7 @@ export default function Layout() {
       setVoiceInput("")
       setIsListening(true)
       setIsActive(true)
-      setConfirmationMessage("Listening...")
+      setConfirmationMessage("正在聆听...")
       recognitionRef.current.start()
     }
   }
@@ -166,7 +161,7 @@ export default function Layout() {
 
   const handleVoiceCommand = () => {
     if (voiceInput.trim() === "") {
-      setConfirmationMessage("Sorry, I didn't catch that. Please try again.")
+      setConfirmationMessage("抱歉，我没有听清楚。请再试一次。")
       setTimeout(() => setConfirmationMessage(""), 2000)
       return
     }
@@ -175,32 +170,32 @@ export default function Layout() {
     let action = null
     let confirmation = ""
 
-    if (input.includes("home") || input.includes("main page")) {
-      confirmation = "Going to Home page..."
+    if (input.includes("首页") || input.includes("主页")) {
+      confirmation = "正在前往首页..."
       action = () => navigate("/")
     } 
-    else if (input.includes("health") || input.includes("clinic") || input.includes("hospital")) {
-      confirmation = "Opening Healthcare Resources..."
+    else if (input.includes("医疗") || input.includes("医院") || input.includes("诊所")) {
+      confirmation = "正在打开医疗资源..."
       action = () => navigate("/HealthcarePage")
     }
-    else if (input.includes("government") || input.includes("service") || input.includes("passport")) {
-      confirmation = "Showing Government Services..."
+    else if (input.includes("政府") || input.includes("服务") || input.includes("护照")) {
+      confirmation = "正在显示政府服务..."
       action = () => navigate("/GovernmentServices")
     }
-    else if (input.includes("event") || input.includes("community") || input.includes("activity")) {
-      confirmation = "Displaying Community Events..."
-      action = () => navigate("/CommunityEvents")
+    else if (input.includes("活动") || input.includes("社区") || input.includes("事件")) {
+      confirmation = "正在显示社区活动..."
+      action = () => navigate("/events")
     }
-    else if (input.includes("increase") && (input.includes("font") || input.includes("text") || input.includes("size"))) {
-      confirmation = "Increasing text size..."
+    else if (input.includes("增大") && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
+      confirmation = "正在增大文字大小..."
       action = increaseFontSize
     }
-    else if (input.includes("decrease") && (input.includes("font") || input.includes("text") || input.includes("size"))) {
-      confirmation = "Decreasing text size..."
+    else if (input.includes("减小") && (input.includes("字体") || input.includes("文字") || input.includes("大小"))) {
+      confirmation = "正在减小文字大小..."
       action = decreaseFontSize
     }
     else {
-      confirmation = "Command not recognized. Try saying 'Go to healthcare' or 'Show government services'"
+      confirmation = "未识别命令。请尝试说'前往医疗'或'显示政府服务'"
     }
 
     setConfirmationMessage(confirmation)
@@ -215,27 +210,26 @@ export default function Layout() {
     }
   }
 
-
   return (
     <div className="min-h-screen flex flex-col" style={{ fontSize: `${fontSize}px` }}>
-      {/* Header */}
+      {/* 顶部导航栏 */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
+            {/* 标志 */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center"
             >
               <div className="text-2xl font-bold text-gray-800">
-                <span className="text-blue-600">Community</span>Connect
+                <span className="text-blue-600">社区</span>连接
               </div>
             </motion.div>
 
-            {/* Desktop Navigation */}
+            {/* 桌面导航 */}
             <div className="hidden lg:flex items-center space-x-8">
-              {/* Search */}
+              {/* 搜索 */}
               <div className="relative">
                 <button 
                   onClick={() => setSearchOpen(!searchOpen)}
@@ -254,7 +248,7 @@ export default function Layout() {
                       <div className="relative">
                         <input
                           type="text"
-                          placeholder="Search resources (e.g., 'health' or '健康')..."
+                          placeholder="搜索资源 (例如: '医疗' 或 '政府')..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -273,48 +267,48 @@ export default function Layout() {
                                 onClick={() => setSearchOpen(false)}
                               >
                                 {item.icon}
-                                <span className="ml-3">{item.label} / {item.labelCn}</span>
+                                <span className="ml-3">{item.label}</span>
                               </NavLink>
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-gray-500 text-sm mt-3">No results found.</p>
+                        <p className="text-gray-500 text-sm mt-3">未找到结果</p>
                       )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              {/* Font Size Controls */}
+              {/* 字体大小控制 */}
               <div className="flex items-center space-x-2 border-l border-r border-gray-200 px-4">
                 <button
                   onClick={decreaseFontSize}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="Decrease font size"
+                  aria-label="减小字体"
                 >
-                  <FiZoomOut className="w-5 h-5" />
+                  <FiZoomOut className="w-4 h-4" />
                 </button>
-                <span className="text-xl text-gray-400">Text Size</span>
+                <span className="text-xs text-gray-400">文字大小</span>
                 <button
                   onClick={increaseFontSize}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
-                  aria-label="Increase font size"
+                  aria-label="增大字体"
                 >
-                  <FiZoomIn className="w-5 h-5" />
+                  <FiZoomIn className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* User Actions */}
+              {/* 用户操作 */}
               <div className="flex items-center space-x-4">
                 <button className="flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors">
                   <FiUser className="w-5 h-5" />
-                  <span className="text-sm font-medium">Sign In</span>
+                  <span className="text-sm font-medium">登录</span>
                 </button>
               </div>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* 移动菜单按钮 */}
             <div className="flex lg:hidden items-center space-x-4">
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
@@ -331,7 +325,7 @@ export default function Layout() {
             </div>
           </div>
 
-          {/* Desktop Navbar */}
+          {/* 桌面导航栏 */}
           <nav className="hidden lg:block border-t border-gray-100">
             <div className="flex">
               {navItems.map((item) => (
@@ -354,7 +348,7 @@ export default function Layout() {
           </nav>
         </div>
 
-        {/* Mobile Search */}
+        {/* 移动搜索 */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -367,7 +361,7 @@ export default function Layout() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search resources (e.g., 'health' or '健康')..."
+                    placeholder="搜索资源 (例如: '医疗' 或 '政府')..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -385,13 +379,13 @@ export default function Layout() {
                             onClick={() => setSearchOpen(false)}
                           >
                             {item.icon}
-                            <span className="ml-3">{item.label} / {item.labelCn}</span>
+                            <span className="ml-3">{item.label}</span>
                           </NavLink>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-500 text-sm mt-3">No results found.</p>
+                    <p className="text-gray-500 text-sm mt-3">未找到结果</p>
                   )}
                 </div>
               </div>
@@ -400,7 +394,7 @@ export default function Layout() {
         </AnimatePresence>
       </header>
 
-      {/* Mobile Menu */}
+      {/* 移动菜单 */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -431,19 +425,19 @@ export default function Layout() {
 
                 <div className="border-t border-gray-100 pt-3 mt-2">
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-gray-600">Text Size</span>
+                    <span className="text-gray-600">文字大小</span>
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={decreaseFontSize}
                         className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                        aria-label="Decrease font size"
+                        aria-label="减小字体"
                       >
                         <FiZoomOut className="w-4 h-4" />
                       </button>
                       <button
                         onClick={increaseFontSize}
                         className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                        aria-label="Increase font size"
+                        aria-label="增大字体"
                       >
                         <FiZoomIn className="w-4 h-4" />
                       </button>
@@ -453,7 +447,7 @@ export default function Layout() {
 
                 <button className="flex items-center justify-center w-full py-3 px-4 mt-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                   <FiUser className="mr-2" />
-                  Sign In
+                  登录
                 </button>
               </div>
             </div>
@@ -461,21 +455,21 @@ export default function Layout() {
         )}
       </AnimatePresence>
 
-      {/* Main content */}
+      {/* 主要内容 */}
       <main className="flex-grow bg-gray-50 pb-12">
         <div className="container mx-auto px-4 py-6">
           <Outlet />
         </div>
       </main>
 
-      {/* Footer (unchanged from your previous implementation) */}
+      {/* 页脚 */}
       <footer className="bg-gray-800 text-gray-300 py-8">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">CommunityConnect</h3>
+              <h3 className="text-white text-lg font-semibold mb-4">社区连接</h3>
               <p className="text-gray-400 mb-4">
-                Helping seniors and families access essential services with dignity and ease.
+                帮助老年人和家庭便捷有尊严地获取基本服务。
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -494,27 +488,27 @@ export default function Layout() {
             </div>
 
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-white text-lg font-semibold mb-4">快速链接</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Resources</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">服务</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">资源</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Support</h3>
+              <h3 className="text-white text-lg font-semibold mb-4">支持</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Accessibility</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">帮助中心</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">隐私政策</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">服务条款</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">无障碍访问</a></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Contact Us</h3>
+              <h3 className="text-white text-lg font-semibold mb-4">联系我们</h3>
               <ul className="space-y-3">
                 <li className="flex items-start space-x-3">
                   <FiMail className="mt-1 flex-shrink-0 text-gray-400" />
@@ -530,10 +524,10 @@ export default function Layout() {
 
           <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} CommunityConnect. All rights reserved.
+              © {new Date().getFullYear()} 社区连接。保留所有权利。
             </p>
             <div className="mt-4 md:mt-0 flex items-center">
-              <p className="text-gray-400 text-sm mr-2">Powered by</p>
+              <p className="text-gray-400 text-sm mr-2">技术支持</p>
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 11.5C4 10.1193 5.11929 9 6.5 9H17.5C18.8807 9 20 10.1193 20 11.5V17.5C20 18.8807 18.8807 20 17.5 20H6.5C5.11929 20 4 18.8807 4 17.5V11.5Z" fill="#74AA9C"/>
                 <path d="M4 6.5C4 5.11929 5.11929 4 6.5 4H17.5C18.8807 4 20 5.11929 20 6.5V11.5C20 10.1193 18.8807 9 17.5 9H6.5C5.11929 9 4 10.1193 4 11.5V6.5Z" fill="#10A37F"/>
@@ -558,11 +552,11 @@ export default function Layout() {
                 <>
                   <div className="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></div>
                   <span className="text-sm">
-                    {voiceInput || "Listening..."}
+                    {voiceInput || "正在聆听..."}
                   </span>
                 </>
               ) : (
-                <span className="text-sm">{confirmationMessage || "Try saying 'Go to healthcare'"}</span>
+                <span className="text-sm">{confirmationMessage || "请尝试说'前往医疗'"}</span>
               )}
             </motion.div>
           )}
@@ -575,7 +569,7 @@ export default function Layout() {
               ? 'bg-red-500 text-white animate-pulse' 
               : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
-          aria-label={isListening ? "Stop listening" : "Start voice assistant"}
+          aria-label={isListening ? "停止聆听" : "启动语音助手"}
         >
           {isListening ? <FiStopCircle size={24} /> : <FiMic size={24} />}
         </button>

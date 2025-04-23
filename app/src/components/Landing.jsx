@@ -1,8 +1,8 @@
-// src/App.jsx
-import { useState } from 'react'
+// src/components/Landing.jsx
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/index.css"
 
 function Landing() {
@@ -15,6 +15,53 @@ function Landing() {
     { code: 'bm', name: 'Bahasa Melayu', greeting: 'Selamat datang' },
     { code: 'ta', name: 'தமிழ்', greeting: 'வரவேற்கிறோம்' }
   ]
+
+  // Check if language was already selected
+  useEffect(() => {
+    const savedLang = localStorage.getItem("language");
+    const redirected = sessionStorage.getItem("redirected");
+  
+    if (savedLang && !redirected) {
+      sessionStorage.setItem("redirected", "true");
+      if (savedLang === 'zh') {
+        navigate("/VitalInformationCn", { replace: true });
+      } else {
+        navigate("/VitalInformation", { replace: true });
+      }
+    }
+  }, [navigate]);
+
+  // Handle side effects when language is selected
+  useEffect(() => {
+    if (selectedLanguage) {
+      localStorage.setItem("language", selectedLanguage);
+
+      if (selectedLanguage === 'zh') {
+        const meta = document.createElement('meta');
+        meta.name = 'google';
+        meta.content = 'notranslate';
+        document.head.appendChild(meta);
+
+        document.documentElement.lang = 'zh';
+
+        if (window.google && window.google.translate) {
+          window.google.translate.TranslateElement({
+            pageLanguage: 'zh',
+            autoDisplay: true
+          });
+        }
+      } else {
+        document.documentElement.lang = selectedLanguage;
+      }
+
+      return () => {
+        const meta = document.querySelector('meta[name="google"]');
+        if (meta) {
+          document.head.removeChild(meta);
+        }
+      };
+    }
+  }, [selectedLanguage]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
@@ -68,9 +115,7 @@ function Landing() {
               initial={{ y: -20 }}
               animate={{ y: 0 }}
             >
-              {
-                languages.find(l => l.code === selectedLanguage)?.greeting
-              }
+              {languages.find(l => l.code === selectedLanguage)?.greeting}
             </motion.h1>
             
             <motion.p 
@@ -95,7 +140,13 @@ function Landing() {
                 className="w-full py-3 text-lg font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => navigate('/GovernmentServices')}
+                onClick={() => {
+                  if (selectedLanguage === 'zh') {
+                    navigate('/VitalInformationCn');
+                  } else {
+                    navigate('/VitalInformation');
+                  }
+                }}
               >
                 {selectedLanguage === 'en' && 'Continue'}
                 {selectedLanguage === 'zh' && '继续'}
@@ -104,7 +155,10 @@ function Landing() {
               </motion.button>
               
               <motion.button 
-                onClick={() => setSelectedLanguage(null)}
+                onClick={() => {
+                  setSelectedLanguage(null);
+                  localStorage.removeItem("language");
+                }}
                 className="text-blue-600 hover:text-blue-800 text-sm underline"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -134,4 +188,4 @@ function Landing() {
   )
 }
 
-export default Landing
+export default Landing;
