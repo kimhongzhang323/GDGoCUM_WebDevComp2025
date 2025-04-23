@@ -60,20 +60,7 @@ export default function PassportApplication() {
     <div className="min-h-screen bg-gray-50" style={{ fontSize: `${fontSize}px` }}>
       {/* Accessibility Toolbar */}
       <div className="fixed bottom-6 right-6 z-50 flex gap-3">
-        <button 
-          onClick={() => adjustFontSize(-1)}
-          className="w-14 h-14 flex items-center justify-center bg-white rounded-full shadow-lg hover:bg-gray-100 text-blue-600 border border-gray-200"
-          aria-label="Decrease font size"
-        >
-          <span className="text-2xl font-bold">A-</span>
-        </button>
-        <button 
-          onClick={() => adjustFontSize(1)}
-          className="w-14 h-14 flex items-center justify-center bg-white rounded-full shadow-lg hover:bg-gray-100 text-blue-600 border border-gray-200"
-          aria-label="Increase font size"
-        >
-          <span className="text-2xl font-bold">A+</span>
-        </button>
+            
         <button 
           onClick={() => setShowHelp(!showHelp)}
           className="w-14 h-14 flex items-center justify-center bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 text-white"
