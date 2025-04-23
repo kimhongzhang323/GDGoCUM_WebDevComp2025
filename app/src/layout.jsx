@@ -19,9 +19,9 @@ import {
   FiUser,
   FiSearch,
   FiMic,
-  FiStopCircle ,
+  FiStopCircle,
 } from "react-icons/fi"
-import { Outlet,NavLink, useNavigate} from "react-router-dom"
+import { Outlet, NavLink, useNavigate } from "react-router-dom"
 import React from "react"
 
 export default function Layout() {
@@ -38,9 +38,9 @@ export default function Layout() {
   ])
   const [lastInputTime, setLastInputTime] = useState(0)
   const [confirmationMessage, setConfirmationMessage] = useState("")
-  const [searchQuery, setSearchQuery] = useState("") // State for search input
+  const [searchQuery, setSearchQuery] = useState("")
   const [filteredNavItems, setFilteredNavItems] = useState([])
-  const [zoomLevel, setZoomLevel] = useState(1); // State for page zoom level
+  const [zoomLevel, setZoomLevel] = useState(1)
 
   const recognitionRef = useRef(null)
   const navigate = useNavigate()
@@ -48,20 +48,20 @@ export default function Layout() {
   const timeoutRef = useRef(null)
 
   const increaseFontSize = () => {
-    setFontSize((prev) => Math.min(prev + 2, 32)); // Limit max font size
+    setFontSize((prev) => Math.min(prev + 2, 32))
   }
 
   const decreaseFontSize = () => {
-    setFontSize((prev) => Math.max(prev - 2, 12)); // Limit min font size
+    setFontSize((prev) => Math.max(prev - 2, 12))
   }
 
   const increaseZoomLevel = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.1, 2)); // Increase zoom level by 0.1, max 2x
-  };
+    setZoomLevel((prev) => Math.min(prev + 0.1, 2))
+  }
   
   const decreaseZoomLevel = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.1, 0.5)); // Decrease zoom level by 0.1, min 0.5x
-  };
+    setZoomLevel((prev) => Math.max(prev - 0.1, 0.5))
+  }
 
   const navItems = [
     { id: "VitalInformation", label: "Home", labelCn: "主页", icon: <FiHome /> },
@@ -70,7 +70,6 @@ export default function Layout() {
     { id: "CommunityEvents", label: "Community Events", labelCn: "社区活动", icon: <FiCalendar /> },
   ]
 
-  // Filter nav items based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredNavItems([])
@@ -97,9 +96,7 @@ export default function Layout() {
     }
   }
 
-
-   // Initialize speech recognition
-   useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       if (SpeechRecognition) {
@@ -132,7 +129,6 @@ export default function Layout() {
     }
   }, [])
 
-  // Check for silence after voice input
   useEffect(() => {
     if (isListening && lastInputTime > 0) {
       clearTimeout(timeoutRef.current)
@@ -224,24 +220,15 @@ export default function Layout() {
     }
   }
 
-
   return (
-    <div
-    className="min-h-screen flex flex-col"
-    style={{
+    <div className="flex flex-col min-h-screen" style={{
       fontSize: `${fontSize}px`,
-      transform: `scale(${zoomLevel})`, // Apply zoom level
-      transformOrigin: "top left", // Ensure zoom starts from the top-left corner
-      transition: "transform 0.2s ease-in-out", // Smooth transition for zooming
-    }}
-  >
+      transform: `scale(${zoomLevel})`,
+      transformOrigin: "top left",
+      transition: "transform 0.2s ease-in-out",
+    }}>
       {/* Header */}
-      <header
-        className="bg-white shadow-sm fixed top-0 left-0 w-full z-50"
-        style={{
-          transform: "none", // Prevent scaling from affecting the navbar
-        }}
-      >
+      <header className="bg-white shadow-sm fixed top-0 left-0 w-full z-50" style={{ transform: "none" }}>
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -250,13 +237,13 @@ export default function Layout() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center"
             >
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-xl sm:text-2xl font-bold text-gray-800">
                 <span className="text-blue-600">Community</span>Connect
               </div>
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-4 sm:space-x-8">
               {/* Search */}
               <div className="relative">
                 <button 
@@ -276,7 +263,7 @@ export default function Layout() {
                       <div className="relative">
                         <input
                           type="text"
-                          placeholder="Search resources (e.g., 'health' or '健康')..."
+                          placeholder="Search resources..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -308,11 +295,8 @@ export default function Layout() {
                 </AnimatePresence>
               </div>
 
-              {/* Font Size Controls */}
-              
-
               {/* Page Zoom Controls */}
-              <div className="flex items-center space-x-2 border-l border-r border-gray-200 px-4">
+              <div className="hidden md:flex items-center space-x-2 border-l border-r border-gray-200 px-4">
                 <button
                   onClick={decreaseZoomLevel}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
@@ -320,7 +304,7 @@ export default function Layout() {
                 >
                   <FiZoomOut className="w-5 h-5" />
                 </button>
-                <span className="text-xl text-gray-400">Page Zoom</span>
+                <span className="text-sm sm:text-xl text-gray-400">Zoom</span>
                 <button
                   onClick={increaseZoomLevel}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
@@ -334,7 +318,7 @@ export default function Layout() {
               <div className="flex items-center space-x-4">
                 <button className="flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors">
                   <FiUser className="w-5 h-5" />
-                  <span className="text-sm font-medium">Sign In</span>
+                  <span className="hidden sm:inline text-sm font-medium">Sign In</span>
                 </button>
               </div>
             </div>
@@ -364,7 +348,7 @@ export default function Layout() {
                   key={item.id}
                   to={item.id === "home" ? "/" : `/${item.id}`}
                   className={({ isActive }) =>
-                    `flex items-center px-6 py-4 text-base font-medium transition-colors ${
+                    `flex items-center px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-medium transition-colors ${
                       isActive
                         ? "text-blue-600 border-b-2 border-blue-500"
                         : "text-gray-600 hover:text-blue-500 hover:bg-gray-50"
@@ -392,7 +376,7 @@ export default function Layout() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search resources (e.g., 'health' or '健康')..."
+                    placeholder="Search resources..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -400,25 +384,23 @@ export default function Layout() {
                   <button className="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600">
                     <FiSearch />
                   </button>
-                  {filteredNavItems.length > 0 ? (
-                    <ul className="mt-3 space-y-2">
-                      {filteredNavItems.map((item) => (
-                        <li key={item.id}>
-                          <NavLink
-                            to={item.id === "home" ? "/" : `/${item.id}`}
-                            className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100"
-                            onClick={() => setSearchOpen(false)}
-                          >
-                            {item.icon}
-                            <span className="ml-3">{item.label} / {item.labelCn}</span>
-                          </NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-500 text-sm mt-3">No results found.</p>
-                  )}
                 </div>
+                {filteredNavItems.length > 0 && (
+                  <ul className="mt-3 space-y-2">
+                    {filteredNavItems.map((item) => (
+                      <li key={item.id}>
+                        <NavLink
+                          to={item.id === "home" ? "/" : `/${item.id}`}
+                          className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100"
+                          onClick={() => setSearchOpen(false)}
+                        >
+                          {item.icon}
+                          <span className="ml-3">{item.label} / {item.labelCn}</span>
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </motion.div>
           )}
@@ -432,7 +414,7 @@ export default function Layout() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white shadow-lg"
+            className="lg:hidden bg-white shadow-lg fixed top-16 w-full z-40"
           >
             <div className="container mx-auto px-4 py-3">
               <div className="flex flex-col space-y-1">
@@ -487,120 +469,93 @@ export default function Layout() {
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-grow bg-gray-50 pt-17 pb-24">
-        <div className="container mx-auto px-4 py-6">
+      <main className="flex-grow bg-gray-50 pt-18 pb-40 px-4 sm:px-6">
+        <div className="container mx-auto py-6">
           <Outlet />
         </div>
       </main>
 
-      {/* Footer (unchanged from your previous implementation) */}
-      <footer className="bg-gray-800 text-gray-300 py-8 w-full fixed bottom-0">
+      {/* Footer */}
+      <footer className="bg-gray-800 text-gray-300 py-4 fixed bottom-0 w-full">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-white text-lg font-semibold mb-4">CommunityConnect</h3>
-              <p className="text-gray-400 mb-4">
-                Helping seniors and families access essential services with dignity and ease.
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <h3 className="text-white text-sm sm:text-lg font-semibold mb-2">CommunityConnect</h3>
+              <p className="text-gray-400 text-xs sm:text-sm">
+                Helping seniors access services
               </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <span className="sr-only">Facebook</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <span className="sr-only">Twitter</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-              </div>
             </div>
 
-            <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Resources</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+            <div className="hidden sm:block">
+              <h3 className="text-white text-sm sm:text-lg font-semibold mb-2">Quick Links</h3>
+              <ul className="space-y-1">
+                <li><a href="#" className="text-gray-400 hover:text-white text-xs sm:text-sm">Home</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white text-xs sm:text-sm">Services</a></li>
+              </ul>
+            </div>
+
+            <div className="hidden sm:block">
+              <h3 className="text-white text-sm sm:text-lg font-semibold mb-2">Support</h3>
+              <ul className="space-y-1">
+                <li><a href="#" className="text-gray-400 hover:text-white text-xs sm:text-sm">Help</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white text-xs sm:text-sm">Privacy</a></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Accessibility</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-white text-lg font-semibold mb-4">Contact Us</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start space-x-3">
-                  <FiMail className="mt-1 flex-shrink-0 text-gray-400" />
-                  <span className="text-gray-400">support@communityconnect.org</span>
+              <h3 className="text-white text-sm sm:text-lg font-semibold mb-2">Contact</h3>
+              <ul className="space-y-1">
+                <li className="flex items-start space-x-2">
+                  <FiMail className="mt-0.5 flex-shrink-0 text-gray-400 text-sm" />
+                  <span className="text-gray-400 text-xs sm:text-sm">support@cc.org</span>
                 </li>
-                <li className="flex items-center space-x-3">
-                  <FiPhone className="flex-shrink-0 text-gray-400" />
-                  <a href="tel:+18005551234" className="text-gray-400 hover:text-white transition-colors">+1 (800) 555-1234</a>
+                <li className="flex items-center space-x-2">
+                  <FiPhone className="flex-shrink-0 text-gray-400 text-sm" />
+                  <a href="tel:+18005551234" className="text-gray-400 hover:text-white text-xs sm:text-sm">+1 (800) 555-1234</a>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} CommunityConnect. All rights reserved.
+          <div className="border-t border-gray-700 mt-4 pt-4 flex flex-col sm:flex-row justify-between items-center">
+            <p className="text-gray-400 text-xs sm:text-sm">
+              © {new Date().getFullYear()} CommunityConnect
             </p>
-            <div className="mt-4 md:mt-0 flex items-center">
-              <p className="text-gray-400 text-sm mr-2">Powered by</p>
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 11.5C4 10.1193 5.11929 9 6.5 9H17.5C18.8807 9 20 10.1193 20 11.5V17.5C20 18.8807 18.8807 20 17.5 20H6.5C5.11929 20 4 18.8807 4 17.5V11.5Z" fill="#74AA9C"/>
-                <path d="M4 6.5C4 5.11929 5.11929 4 6.5 4H17.5C18.8807 4 20 5.11929 20 6.5V11.5C20 10.1193 18.8807 9 17.5 9H6.5C5.11929 9 4 10.1193 4 11.5V6.5Z" fill="#10A37F"/>
-              </svg>
-              <span className="text-gray-400 text-sm ml-1">OpenAI</span>
-            </div>
           </div>
         </div>
       </footer>
-      <div className="sticky bottom-20 pr-10 z-50 flex flex-col items-end gap-4">
-          {/* Font Size Controls */}
-          <div className="flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
-            <button
-              onClick={() => decreaseFontSize()}
-              className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-              aria-label="Decrease font size"
-            >
-              <span className="text-xl font-bold">A-</span>
-            </button>
-            <button
-              onClick={() => increaseFontSize()}
-              className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-              aria-label="Increase font size"
-            >
-              <span className="text-xl font-bold">A+</span>
-            </button>
-          </div>
 
-          {/* Microphone Button */}
+      {/* Floating controls */}
+      <div className="sticky bottom-20 pr-4 z-50 flex flex-col items-end gap-3">
+        <div className="flex gap-2 bg-white p-2 rounded-full shadow-lg border border-gray-200">
           <button
-            onClick={toggleListening}
-            className={`w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all ${
-              isListening
-                ? 'bg-red-500 text-white animate-pulse'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
-            aria-label={isListening ? "Stop listening" : "Start voice assistant"}
+            onClick={decreaseFontSize}
+            className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800 transition-colors"
+            aria-label="Decrease font size"
           >
-            {isListening ? <FiStopCircle size={24} /> : <FiMic size={24} />}
+            <span className="text-lg font-bold">A-</span>
+          </button>
+          <button
+            onClick={increaseFontSize}
+            className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800 transition-colors"
+            aria-label="Increase font size"
+          >
+            <span className="text-lg font-bold">A+</span>
           </button>
         </div>
 
+        <button
+          onClick={toggleListening}
+          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${
+            isListening
+              ? 'bg-red-500 text-white animate-pulse'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+          aria-label={isListening ? "Stop listening" : "Start voice assistant"}
+        >
+          {isListening ? <FiStopCircle size={20} /> : <FiMic size={20} />}
+        </button>
+      </div>
     </div>
   )
 }
