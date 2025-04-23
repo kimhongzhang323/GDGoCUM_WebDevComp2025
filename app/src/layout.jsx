@@ -487,19 +487,14 @@ export default function Layout() {
       </AnimatePresence>
 
       {/* Main content */}
-      <main
-        className="flex-grow bg-gray-50 pb-12"
-        style={{
-          paddingTop: "5rem", // Add padding equal to the navbar height
-        }}
-      >
+      <main className="flex-grow bg-gray-50 pt-17 pb-24">
         <div className="container mx-auto px-4 py-6">
           <Outlet />
         </div>
       </main>
 
       {/* Footer (unchanged from your previous implementation) */}
-      <footer className="bg-gray-800 text-gray-300 py-8">
+      <footer className="bg-gray-800 text-gray-300 py-8 w-full fixed bottom-0">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -573,58 +568,39 @@ export default function Layout() {
           </div>
         </div>
       </footer>
-      <div className="fixed bottom-6 right-6 z-50">
-        <AnimatePresence>
-          {(isActive || confirmationMessage) && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className={`absolute -top-20 right-0 bg-white shadow-lg rounded-full px-4 py-2 flex items-center ${
-                isListening ? 'border-2 border-red-500' : ''
-              }`}
+      <div className="sticky bottom-20 pr-10 z-50 flex flex-col items-end gap-4">
+          {/* Font Size Controls */}
+          <div className="flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
+            <button
+              onClick={() => decreaseFontSize()}
+              className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+              aria-label="Decrease font size"
             >
-              {isListening ? (
-                <>
-                  <div className="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></div>
-                  <span className="text-sm">
-                    {voiceInput || "Listening..."}
-                  </span>
-                </>
-              ) : (
-                <span className="text-sm">{confirmationMessage || "Try saying 'Go to healthcare'"}</span>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <div className="fixed bottom-30 right-6 z-50 flex gap-3 bg-white p-3 rounded-full shadow-lg border border-gray-200">
-          <button 
-            onClick={() => decreaseFontSize()}
-            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-            aria-label="Decrease font size"
+              <span className="text-xl font-bold">A-</span>
+            </button>
+            <button
+              onClick={() => increaseFontSize()}
+              className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
+              aria-label="Increase font size"
+            >
+              <span className="text-xl font-bold">A+</span>
+            </button>
+          </div>
+
+          {/* Microphone Button */}
+          <button
+            onClick={toggleListening}
+            className={`w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all ${
+              isListening
+                ? 'bg-red-500 text-white animate-pulse'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+            aria-label={isListening ? "Stop listening" : "Start voice assistant"}
           >
-            <span className="text-xl font-bold">A-</span>
-          </button>
-          <button 
-            onClick={() => increaseFontSize()}
-            className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full hover:bg-blue-200 text-blue-800"
-            aria-label="Increase font size"
-          >
-            <span className="text-xl font-bold">A+</span>
+            {isListening ? <FiStopCircle size={24} /> : <FiMic size={24} />}
           </button>
         </div>
-        <button
-          onClick={toggleListening}
-          className={`w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all ${
-            isListening 
-              ? 'bg-red-500 text-white animate-pulse' 
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-          aria-label={isListening ? "Stop listening" : "Start voice assistant"}
-        >
-          {isListening ? <FiStopCircle size={24} /> : <FiMic size={24} />}
-        </button>
-      </div>
+
     </div>
   )
 }
