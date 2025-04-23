@@ -55,6 +55,14 @@ export default function Layout() {
     setFontSize((prev) => Math.max(prev - 2, 12))
   }
 
+  const increaseZoomLevel = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.1, 2)); // Increase zoom level by 0.1, max 2x
+  };
+
+  const decreaseZoomLevel = () => {
+    setZoomLevel((prev) => Math.max(prev - 0.1, 0.5)); // Decrease zoom level by 0.1, min 0.5x
+  };
+
   const navItems = [
     { id: "VitalInformationCn", label: "首页", labelEn: "Home", icon: <FiHome /> },
     { id: "GovernmentServicesCn", label: "政府服务", labelEn: "Government Services", icon: <FiShield /> },
@@ -213,9 +221,22 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ fontSize: `${fontSize}px` }}>
+    <div
+    className="min-h-screen flex flex-col"
+    style={{
+      fontSize: `${fontSize}px`,
+      transform: `scale(${zoomLevel})`, // Apply zoom level
+      transformOrigin: "top left", // Ensure zoom starts from the top-left corner
+      transition: "transform 0.2s ease-in-out", // Smooth transition for zooming
+    }}
+  >
       {/* 页眉 */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header
+        className="bg-white shadow-sm fixed top-0 left-0 w-full z-50"
+        style={{
+          transform: "none", // Prevent scaling from affecting the navbar
+        }}
+      >
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             {/* 标志 */}
@@ -285,7 +306,7 @@ export default function Layout() {
               {/* 页面缩放控制 */}
               <div className="flex items-center space-x-2 border-l border-r border-gray-200 px-4">
                 <button
-                  onClick={() => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5))}
+                  onClick={decreaseZoomLevel}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
                   aria-label="缩小"
                 >
@@ -293,7 +314,7 @@ export default function Layout() {
                 </button>
                 <span className="text-xl text-gray-400">页面缩放</span>
                 <button
-                  onClick={() => setZoomLevel((prev) => Math.min(prev + 0.1, 2))}
+                  onClick={increaseZoomLevel}
                   className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors"
                   aria-label="放大"
                 >
@@ -458,7 +479,12 @@ export default function Layout() {
       </AnimatePresence>
 
       {/* 主要内容 */}
-      <main className="flex-grow bg-gray-50 pb-12">
+      <main
+        className="flex-grow bg-gray-50 pb-12"
+        style={{
+          paddingTop: "5rem", // Add padding equal to the navbar height
+        }}
+      >
         <div className="container mx-auto px-4 py-6">
           <Outlet />
         </div>

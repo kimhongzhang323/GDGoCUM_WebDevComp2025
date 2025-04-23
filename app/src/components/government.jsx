@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, ArrowRight, ChevronRight, HelpCircle, Home, Info } from "lucide-react";
 
 const servicesList = [
@@ -72,8 +72,23 @@ export default function GovernmentServices() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [fontSize] = useState(18);
+  const [speech, setSpeech] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   
   const categories = ["All", ...new Set(servicesList.map(service => service.category))];
+
+  useEffect(() => {
+    // Initialize speech synthesis
+    if ('speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      setSpeech(synth);
+      
+      // Cleanup on unmount
+      return () => {
+        synth.cancel();
+      };
+    }
+  }, []);
 
   const filtered = servicesList.filter((service) => {
     const matchesSearch = service.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -82,11 +97,33 @@ export default function GovernmentServices() {
     return matchesSearch && matchesCategory;
   });
 
+  const speak = (text) => {
+    if (speech && text) {
+      speech.cancel(); // Stop any ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9; // Slightly slower than normal
+      utterance.pitch = 1;
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      speech.speak(utterance);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if (speech) {
+      speech.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  const handleHover = (text) => {
+    if (isSpeaking) stopSpeaking();
+    speak(text);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4 sm:px-6 lg:px-8" style={{ fontSize: `${fontSize}px` }}>
-    
-
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="mb-10 text-center">
@@ -95,10 +132,18 @@ export default function GovernmentServices() {
               <Home className="h-8 w-8 text-blue-600" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+          <h1 
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-3"
+            onMouseEnter={() => handleHover("Malaysia Citizen Services")}
+            onMouseLeave={stopSpeaking}
+          >
             Malaysia Citizen Services
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p 
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+            onMouseEnter={() => handleHover("Simple access to all government services in one place")}
+            onMouseLeave={stopSpeaking}
+          >
             Simple access to all government services in one place
           </p>
         </header>
@@ -117,6 +162,8 @@ export default function GovernmentServices() {
               className="block w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
               aria-label="Search services"
               style={{ fontSize: `${fontSize}px` }}
+              onMouseEnter={() => handleHover("Search for government services")}
+              onMouseLeave={stopSpeaking}
             />
           </div>
 
@@ -125,6 +172,8 @@ export default function GovernmentServices() {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
+                onMouseEnter={() => handleHover(category === "All" ? "All categories" : category)}
+                onMouseLeave={stopSpeaking}
                 className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
                   selectedCategory === category
                     ? "bg-blue-500 text-white shadow-md"
@@ -145,6 +194,8 @@ export default function GovernmentServices() {
               <div
                 key={idx}
                 className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 flex flex-col"
+                onMouseEnter={() => handleHover(`${service.name}. ${service.description}`)}
+                onMouseLeave={stopSpeaking}
               >
                 <div className={`h-40 ${service.color} flex items-center justify-center p-6`}>
                   <img 
@@ -159,10 +210,24 @@ export default function GovernmentServices() {
                 </div>
                 
                 <div className="p-6 flex-grow">
-                  <h2 className="text-xl font-bold text-gray-900 mb-3 leading-snug">
+                  <h2 
+                    className="text-xl font-bold text-gray-900 mb-3 leading-snug"
+                    onMouseEnter={(e) => {
+                      e.stopPropagation();
+                      handleHover(service.name);
+                    }}
+                    onMouseLeave={stopSpeaking}
+                  >
                     {service.name}
                   </h2>
-                  <p className="text-gray-600 mb-5">
+                  <p 
+                    className="text-gray-600 mb-5"
+                    onMouseEnter={(e) => {
+                      e.stopPropagation();
+                      handleHover(service.description);
+                    }}
+                    onMouseLeave={stopSpeaking}
+                  >
                     {service.description}
                   </p>
                   <a
@@ -170,6 +235,11 @@ export default function GovernmentServices() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    onMouseEnter={(e) => {
+                      e.stopPropagation();
+                      handleHover(`Access ${service.name}`);
+                    }}
+                    onMouseLeave={stopSpeaking}
                   >
                     Access <ArrowRight className="ml-1 h-4 w-4" />
                   </a>
@@ -178,7 +248,11 @@ export default function GovernmentServices() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+          <div 
+            className="text-center py-16 bg-white rounded-2xl border border-gray-200"
+            onMouseEnter={() => handleHover("No services found. Try different search terms or categories")}
+            onMouseLeave={stopSpeaking}
+          >
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
               <Search className="h-8 w-8 text-gray-400" />
             </div>
@@ -194,6 +268,8 @@ export default function GovernmentServices() {
                 setSelectedCategory("All");
               }}
               className="text-blue-500 hover:underline"
+              onMouseEnter={() => handleHover("Show all services")}
+              onMouseLeave={stopSpeaking}
             >
               Show all services
             </button>
@@ -201,7 +277,11 @@ export default function GovernmentServices() {
         )}
 
         {/* Help Section */}
-        <div className="mt-16 bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+        <div 
+          className="mt-16 bg-white rounded-2xl p-8 border border-gray-200 shadow-sm"
+          onMouseEnter={() => handleHover("Need help using these services? Our friendly volunteers can guide you through any government service process")}
+          onMouseLeave={stopSpeaking}
+        >
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-4">
               <div className="bg-blue-100 p-3 rounded-full">
@@ -218,6 +298,11 @@ export default function GovernmentServices() {
               <a
                 href="#"
                 className="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
+                onMouseEnter={(e) => {
+                  e.stopPropagation();
+                  handleHover("Get Personal Assistance");
+                }}
+                onMouseLeave={stopSpeaking}
               >
                 Get Personal Assistance
                 <ChevronRight className="ml-2 h-5 w-5" />
@@ -225,6 +310,11 @@ export default function GovernmentServices() {
               <a
                 href="#"
                 className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
+                onMouseEnter={(e) => {
+                  e.stopPropagation();
+                  handleHover("View Video Guides");
+                }}
+                onMouseLeave={stopSpeaking}
               >
                 View Video Guides
               </a>
@@ -233,7 +323,11 @@ export default function GovernmentServices() {
         </div>
 
         {/* Safety Notice */}
-        <div className="mt-8 bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-400 flex items-start">
+        <div 
+          className="mt-8 bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-400 flex items-start"
+          onMouseEnter={() => handleHover("Safety Notice. Government services are always free. Never share passwords or make payments to unofficial callers.")}
+          onMouseLeave={stopSpeaking}
+        >
           <Info className="h-5 w-5 text-yellow-500 mt-1 mr-3 flex-shrink-0" />
           <div>
             <h3 className="text-lg font-semibold text-yellow-800 mb-1">Safety Notice</h3>
